@@ -1,0 +1,572 @@
+/*
+ * Reset (Meyer).
+ */
+
+:root { 
+	
+	
+    --farbe:rgb(155, 0, 0); /* akzentfarbe */
+    --verlauf:linear-gradient(45deg,rgb(155, 0, 0), rgb(155, 0, 0));
+}
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: middle;
+}
+
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+
+body {
+    line-height: 1;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+blockquote, q {
+    quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/*
+ * Custom basic styling.
+ */
+
+html {
+    box-sizing: border-box;
+    font-size: 100%;
+    -webkit-text-size-adjust: 100%;
+    font-variant-ligatures: none;
+    -webkit-font-variant-ligatures: none;
+    text-rendering: optimizeLegibility;
+    -moz-osx-font-smoothing: grayscale;
+    font-smoothing: antialiased;
+    -webkit-font-smoothing: antialiased;
+    text-shadow: rgba(0, 0, 0, .01) 0 0 1px;
+}
+
+* {
+    box-sizing: inherit;
+}
+
+body {
+    background: #111111 no-repeat center center url('ethnew_dark.png');
+	background-position: bottom center;
+    background-attachment: fixed;
+	/* background: #111111 url('./spot.jpg') no-repeat center center; */
+    background-size:cover;
+    font-family: 'Work Sans', sans-serif;
+    color: #AAAAAA;
+}
+
+a {
+    text-decoration: none;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+/*
+ * Spot.
+ */
+
+.spot {
+    position: relative;
+    padding: 0 5vw;
+    height: 100vh;
+    min-height: 700px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.spot-inner {
+    display: block;
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+}
+
+.spot h1 {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 64px;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 30px;
+    max-width: 400px;
+}
+
+.spot p {
+    display: block;
+    font-size: 20px;
+    line-height: 1.5;
+    color: #FFFFFF;
+    max-width: 370px;
+}
+
+.spot a {
+    display: inline-block;
+    background-color: var(--farbe);
+    border: 1px solid var(--farbe);
+    padding: 14px 50px;
+    font-size: 20px;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+/*
+ * Fair.
+ */
+
+.fair {
+    position: relative;
+    max-width: calc(1180px + 10vw);
+    padding: 5vw;
+    margin: 80px auto 100px;
+	border-left:var(--farbe) solid 1px;
+	border-right:var(--farbe) solid 1px;
+	border-radius:0.25rem;
+}
+
+/*
+ * Fair metamask.
+ */
+
+.fair--metamask {
+    display: none;
+}
+
+.fair--metamask input {
+    font-family: 'Work Sans', sans-serif;
+    display: inline-block;
+    font-size: 20px;
+    padding: 0 20px;
+    height: 50px;
+    line-height: 50px;
+    border: 1px solid #FFFFFF;
+    background: transparent;
+    color: #FFFFFF;
+    margin-right: 20px;
+}
+
+.fair--metamask button {
+
+}
+
+/*
+ * Fair table.
+ */
+
+.fair table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.fair table a {
+   color: var(--farbe);
+   opacity: 0.8;
+
+}
+
+.fair tr {
+    border-bottom: 1px solid #D8D8D8;
+}
+
+.fair tr:first-child {
+    border-top: 1px solid #D8D8D8;
+}
+
+.fair td {
+    font-size: 16px;
+    font-weight: 600;
+    padding: 15px 20px;
+}
+
+/*
+ * Fair list.
+ */
+
+.fair ul {
+    font-size: 20px;
+    font-weight: 600;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.fair li {
+    padding-top: 2px;
+    padding-left: 1em;
+    text-indent: -.7em;
+    line-height: 1.4;
+}
+
+.fair li::before {
+    content: "• ";
+    color: var(--farbe); 
+}
+
+.fair ul ul {
+    font-weight: 400;
+}
+
+/*
+ * Fair components / modifiers.
+ */
+
+.fair--default thead td,
+.fair-code td:first-child {
+    line-height: 1.2;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: #CCCCCC;
+    font-weight: 400;
+}
+
+.fair--default td:first-child {
+    width: 70px;
+}
+
+.fair-code {
+    position: relative;
+    padding-right: 290px;
+}
+
+.fair-code img {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+/*
+ * General.
+ */
+
+.h2 {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 40px;
+    padding-top: 20px;
+}
+
+.navbar {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    padding: 10px;
+    z-index: 99;
+    background-color: #000000;
+	transition: transform .25s .1s ease-in-out;
+	width:450px;
+}
+
+.navbartop {
+    -moz-appearance: none;
+    appearance: none;
+
+    position: fixed;
+    top: 0;
+    right: 0;
+ 
+    /* leave defaults in for other browsers */
+    background-size: 35px 20px, 100% 100%, 100% 100%;
+    color:var(--farbe); 
+    width:100%;
+    height:5px;
+
+    z-index:100;
+}
+.navbartop::-webkit-progress-value {
+    background-color: var(--farbe); 
+  }
+
+.header{
+	height:50px;
+	width:50px;
+	position:fixed;
+	top:0;
+	right:0;
+	bottom:0;
+	left:0;
+	background-color:red;
+	z-index:100;
+}
+
+.trans{
+	opacity: 0.5;
+}
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+    cursor: context-menu;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+.topcorner{
+   position:absolute;
+   top:0;
+   right:0;
+  }
+
+.etherum{
+	font-weight:900;
+	font-size:6rem;
+}
+  
+.grid{
+	display:grid;
+	grid-gap:50px;
+	margin:0px auto;
+}
+
+section{
+	background-color:#111111;	
+}
+
+.fair-code button{
+	padding:5px 20px;
+	border: var(--farbe) 2px solid;
+	background-color:#111111;
+	color:var(--farbe);
+	transition: 400ms;
+	width:150px;
+	font-size:15px;
+	font-weight:800;
+}
+
+.fair-code button:hover{
+	background-color:var(--farbe);
+	color:#ffffff;
+	cursor:pointer;
+}
+
+@keyframes bg-animation{
+	0%{background-position:left;}
+	100%{background-position:right;}
+}
+
+#maintbl button{
+	margin-bottom:25px;
+	padding:10px 20px;
+	border:none;
+	border-radius:0.25rem;
+	background-image:var(--verlauf);
+	background-size:400%;
+	color:#000000;
+	transition: 400ms;
+	font-size:25px;
+	animation: bg-animation 5s infinite alternate;
+}
+
+#maintbl button:hover{
+	background-color:var(--farbe);
+	cursor:pointer;
+	padding:10px 30px;
+	box-shadow:10px 10px 25px 0px rgba(0,0,0,0.6);
+}
+
+  #maintbl td 
+{
+    text-align: center; 
+    vertical-align: middle;
+    padding-bottom:20px;
+	font-size:25px;
+}
+
+  #betamount{
+	font-size:15px;
+	background-color:#111111;
+	border:none;
+	color:#aaaaaa;
+	font-weight:800;
+    }
+    
+    #highBidSbelse{
+        color:#b20000;
+    }
+    #highBidYou{
+        color:#005900;
+    }
+    
+/*
+ * Media queries.
+ */
+
+@media screen and (max-width: 1000px) {
+    body {
+        background: #111111 no-repeat center center url('ethnew.png');
+        background-position: bottom center;
+        background-attachment: fixed;
+        /* background: #111111 url('./spot.jpg') no-repeat center center; */
+        background-size:cover;
+        font-family: 'Work Sans', sans-serif;
+        color: #AAAAAA;
+    }
+    .spot h1 {
+        font-size: 42px;
+    }
+
+    .spot p {
+        font-size: 18px;
+    }
+
+    .spot a {
+        font-size: 18px;
+        padding: 14px 30px;
+    }
+
+    .h2 {
+        font-size: 38px;
+        margin-bottom: 40px;
+    }
+
+    .fair {
+        margin: 40px auto 60px;
+    }
+
+    .fair td {
+        padding: 10px;
+        font-size: 12px;
+        word-break: break-all;
+    }
+    #betamount {
+        font-size: 12px;
+    }
+
+    .fair--default td:nth-child(2),
+    .fair-code td:last-child {
+        width: auto;
+    }
+
+    .fair--default td:first-child {
+        width: 40px;
+    }
+
+    .fair-code {
+        padding-right: 0;
+    }
+
+    .fair-code img {
+        position: relative;
+        top: auto;
+        right: auto;
+        margin-top: 20px;
+    }
+
+    .fair--metamask input,
+    .fair--metamask button {
+        font-size: 14px;
+        padding: 0 10px;
+        height: 40px;
+        line-height: 40px;
+    }
+
+    .fair ul {
+        font-size: 14px;
+    }
+	
+	.navbar{
+	width:100%;
+	font-size:13px;
+	}
+
+	.etherum{
+	font-weight:900;
+	font-size:3rem;
+	}
+	
+	.minvalue{
+	font-size:15px;
+	}
+
+.fair-code button{
+	padding:5px 15px;
+	border: var(--farbe) 2px solid;
+	background-color:#111111;
+	color:var(--farbe);
+	transition: 400ms;
+	width:80px;
+	font-size:10px;
+	font-weight:700;
+}
+
+.fair-code button:hover{
+	background-color:var(--farbe);
+	color:#ffffff;
+	cursor:pointer;
+}
+
+
+
+}
