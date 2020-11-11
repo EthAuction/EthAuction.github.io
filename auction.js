@@ -15,10 +15,12 @@ var autouseraccount = false;
 var nullAddress = "0x0000000000000000000000000000000000000000";
 
 var bidtimeout = 3600 * 24;
+var lastBlock = -1;
 var lastMinBet = 0;
 var lastRound = -1;
 var lastPayCount = -1;
 var lasttimeout = -1;
+var lastBidCount = -1;
 var curTimeout = 0;
 var ethProv;
 function init() {
@@ -82,7 +84,7 @@ function init() {
         }
     );
 
-    var tid = setInterval(refreshSite, 2000);
+    var tid = setInterval(refreshSite, 5000);
     var tid = setInterval(secondly, 1000);
 
     refreshSite();
@@ -118,8 +120,153 @@ function secondly(){
     document.documentElement.style.setProperty('--farbe', getGradientColor("#800000", "#008000", 1.0 * curTimeout / bidtimeout));
     document.documentElement.style.setProperty('--verlauf', "linear-gradient(45deg," + getGradientColors("#800000", "#008000", 1.0 * curTimeout / bidtimeout) + ")");
 }
+function checkBidCountChange(curBidCount){
+    if(curBidCount == lastBidCount) return;
+    lastBidCount = curBidCount;
+
+    etherauction.methods.getMinBet(lastRound).call(
+        function(error, result) {
+            if (!error) {
+                if(result != lastMinBet){
+                    lastMinBet = result;
+                    $("#minbetvalue").html(formatWei(result) + "Ξ");
+                    $("#betamount").val(parseFloat(ethProv.utils.fromWei(result, 'ether')).toFixed(9));
+                }
+            } else
+                console.error(error);
+        }
+    );
+
+    etherauction.methods.getHighestBidder(lastRound).call(
+        function(error, result) {
+            if (!error) {
+                $("#highestbidder").text(result);
+                $("#highestbidder").attr("href", accountlink + result + "");
+                 if(result.toLowerCase() == useraccount.toLowerCase()){
+                     $("#highBidSbelse").hide();
+                     $("#highBidYou").show();
+                 }else{
+                     if(result == nullAddress){
+                        $("#highBidSbelseText").html("No bid for now");
+                     }else{
+                        $("#highBidSbelseText").html("Somebody else is the highest bidder");
+                     }
+                     $("#highBidSbelse").show();
+                    $("#highBidYou").hide();
+                 }
+            } else
+                console.error(error);
+        }
+    );
+    etherauction.methods.getRemainTime(lastRound).call(
+        function(error, result) {
+            if (!error) {
+                result = parseInt(result, 10);
+                if(lasttimeout != result){
+                    lasttimeout = result;
+                    curTimeout = result;
+                    $('#bidprogess').val(result);
+                }
+                 $("#timeleft").html(toHHMMSS(curTimeout));
+            } else
+                console.error(error);
+        }
+    );
+}
+function checkBlockChange(curBlock){
+    if(curBlock == lastBlock) return;
+    lastBlock = curBlock;
+    
+    
+    etherauction.methods.getBalance(useraccount).call(
+        function(error, result) {
+            if (!error) {
+                    $("#userbalance").html(formatWei(result));
+            } else
+                console.error(error);
+        }
+    );
+
+    etherauction.methods.getRoundCount().call(
+        function(error, result) {
+            if (!error) {
+                result = parseInt(result, 10);
+                checkRoundChanged(result);
+                $("#roundcount").html(result);
+
+                etherauction.methods.getBidCount(lastRound).call(
+                    function(error, result) {
+                        if (!error) {
+                            result = parseInt(result, 10);
+                            if(lastPayCount != result){
+                                lastPayCount = result;
+                                refreshPayoutTable(lastPayCount);
+                            }
+                            $("#paycount").html(result);
+                            checkBidCountChange(result);
+                        } else
+                            console.error(error);
+                    }
+                );
+
+                etherauction.methods.getBid(lastRound, lastPayCount - 1).call(
+                    function(error, result) {
+                        if (!error) {
+                            $("#highestbid").html(formatWei(result["amount"]));
+                        } else
+                            console.error(error);
+                    }
+                );
+            } else
+                console.error(error);
+        }
+    );
+
+
+    
+    ethProv.eth.getBalance(contractadd, function(error, result) {
+        if (!error) {
+            contractbalance = result;
+            $("#balance").html(formatWei(result));
+        } else
+            console.error(error);
+    });
+
+}
+function checkRoundChanged(curRound){
+    if(curRound == lastRound) return;
+    lastRound = curRound;
+
+    lastPayCount = -1;
+    refreshWinnerTable(lastRound);
+
+    etherauction.methods.getPrice(lastRound).call(
+        function(error, result) {
+            if (!error) {
+                 $("#price").html(formatWei(result) + "Ξ");
+            } else
+                console.error(error);
+        }
+    );
+}
 function refreshSite() {
     try {
+        ethProv.eth.getBlockNumber(
+            function(error, result) {
+                if (!error) {
+                    var currentdate = new Date();
+                    var datetime = "Last refresh: " + currentdate.getDate() + "/" +
+                        (currentdate.getMonth() + 1) + "/" +
+                        currentdate.getFullYear() + " @ " +
+                        currentdate.getHours() + ":" +
+                        currentdate.getMinutes() + ":" +
+                        currentdate.getSeconds();
+                    $("#lastrefresh").text(datetime + " Block: " + result);
+		            checkBlockChange(result);
+                } else
+                    console.error(error);
+            }
+        );
         ethProv.eth.getAccounts(function(error, result) {
             if (error) {
                 $("#sending").hide();
@@ -138,128 +285,6 @@ function refreshSite() {
                 $("#bidmin").text("Enable MetaMask for bidding");
             }
         });
-
-        ethProv.eth.getBlockNumber(
-            function(error, result) {
-                if (!error) {
-                    var currentdate = new Date();
-                    var datetime = "Last refresh: " + currentdate.getDate() + "/" +
-                        (currentdate.getMonth() + 1) + "/" +
-                        currentdate.getFullYear() + " @ " +
-                        currentdate.getHours() + ":" +
-                        currentdate.getMinutes() + ":" +
-                        currentdate.getSeconds();
-                    $("#lastrefresh").text(datetime + " Block: " + result);
-                } else
-                    console.error(error);
-            }
-        );
-        etherauction.methods.getPrice(lastRound).call(
-            function(error, result) {
-                if (!error) {
-					 $("#price").html(formatWei(result) + "Ξ");
-                } else
-                    console.error(error);
-            }
-        );
-		etherauction.methods.getMinBet(lastRound).call(
-            function(error, result) {
-                if (!error) {
-					if(result != lastMinBet){
-                        lastMinBet = result;
-                        $("#minbetvalue").html(formatWei(result) + "Ξ");
-                        $("#betamount").val(parseFloat(ethProv.utils.fromWei(result, 'ether')).toFixed(9));
-                    }
-                } else
-                    console.error(error);
-            }
-        );
-		etherauction.methods.getHighestBidder(lastRound).call(
-            function(error, result) {
-                if (!error) {
-                    $("#highestbidder").text(result);
-                    $("#highestbidder").attr("href", accountlink + result + "");
-                     if(result.toLowerCase() == useraccount.toLowerCase()){
-                         $("#highBidSbelse").hide();
-                         $("#highBidYou").show();
-                     }else{
-                         if(result == nullAddress){
-                            $("#highBidSbelseText").html("No bid for now");
-                         }else{
-                            $("#highBidSbelseText").html("Somebody else is the highest bidder");
-                         }
-                         $("#highBidSbelse").show();
-                        console.log(result);
-                        $("#highBidYou").hide();
-                     }
-                } else
-                    console.error(error);
-            }
-        );
-		etherauction.methods.getRemainTime(lastRound).call(
-            function(error, result) {
-                if (!error) {
-                    result = parseInt(result, 10);
-                    if(lasttimeout != result){
-                        lasttimeout = result;
-                        curTimeout = result;
-                        $('#bidprogess').val(result);
-                    }
-					 $("#timeleft").html(toHHMMSS(curTimeout));
-                } else
-                    console.error(error);
-            }
-        );
-		etherauction.methods.getBalance(useraccount).call(
-            function(error, result) {
-                if (!error) {
-					 $("#userbalance").html(formatWei(result));
-                } else
-                    console.error(error);
-            }
-        );
-		etherauction.methods.getRoundCount().call(
-            function(error, result) {
-                if (!error) {
-                    result = parseInt(result, 10);
-					if(result != lastRound){
-                        lastRound = result;
-						lastPayCount = -1;
-                        refreshWinnerTable(lastRound);
-					}
-					$("#roundcount").html(result);
-                } else
-                    console.error(error);
-            }
-        );
-		etherauction.methods.getBidCount(lastRound).call(
-            function(error, result) {
-                if (!error) {
-                    result = parseInt(result, 10);
-					if(lastPayCount != result){
-						lastPayCount = result;
-						refreshPayoutTable(lastPayCount);
-					}
-					$("#paycount").html(result);
-                } else
-                    console.error(error);
-            }
-        );
-        ethProv.eth.getBalance(contractadd, function(error, result) {
-            if (!error) {
-                contractbalance = result;
-                $("#balance").html(formatWei(result));
-            } else
-                console.error(error);
-        });
-        etherauction.methods.getBid(lastRound, lastPayCount - 1).call(
-            function(error, result) {
-                if (!error) {
-                    $("#highestbid").html(formatWei(result["amount"]));
-                } else
-                    console.error(error);
-            }
-        );
     } catch (err) {}
 }
 
